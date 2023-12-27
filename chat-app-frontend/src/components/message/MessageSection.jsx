@@ -7,17 +7,19 @@ import { MessageContext } from "../../context/MessageContext";
 import { useEffect } from "react";
 
 const MessageSection = () => {
-  const { currentReceiver, privateChats } = useContext(MessageContext);
+  const { currentReceiver, privateChats, publicChats } =
+    useContext(MessageContext);
 
   useEffect(() => {
-    console.log(currentReceiver); // shows current receiver
-    console.log(privateChats); // shows undefined
-  }, [currentReceiver, privateChats]);
+    console.log(currentReceiver); 
+    console.log(publicChats); 
+  }, [currentReceiver, privateChats, publicChats]);
 
-  const currentReceiverMessages =
-    currentReceiver && privateChats
-      ? [...privateChats.get(currentReceiver)]
-      : [];
+  const currentReceiverMessages = currentReceiver
+    ? currentReceiver === "Group Chats"
+      ? publicChats
+      : privateChats && [...privateChats.get(currentReceiver)]
+    : [];
 
   return (
     <Stack

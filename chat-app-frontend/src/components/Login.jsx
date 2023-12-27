@@ -24,7 +24,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const { setUser, user } = useContext(UserContext);
-  const { privateChats, setPrivateChats } = useContext(MessageContext);
+  const { privateChats, setPrivateChats, publicChats, setPublicChats } = useContext(MessageContext);
   const { stompClient, setStompClient } = useContext(StompContext);
 
   const connect = () => {
@@ -78,6 +78,19 @@ const Login = () => {
         }
         break;
       case "MESSAGE":
+        if (senderName !== name) {
+          let newMessage = (
+            <ReceiveMessage
+              isGroup
+              name={senderName}
+              content={payloadData.content}
+            />
+          )
+  
+          setPublicChats(prev => {
+            return [...prev, newMessage]
+          })
+        }
         break;
     }
   };

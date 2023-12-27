@@ -8,14 +8,14 @@ import { MessageContext } from "../../context/MessageContext";
 
 const ContactSection = () => {
   const [query, setQuery] = useState("");
-  const { privateChats } = useContext(MessageContext)
+  const { privateChats } = useContext(MessageContext);
 
   const handleSearch = (e) => {
     console.log(query);
     console.log(e.key);
   };
 
-  const contactNames = privateChats ? [...privateChats.keys()] : []
+  const contactNames = privateChats ? [...privateChats.keys()] : [];
 
   return (
     <Box>
@@ -40,10 +40,12 @@ const ContactSection = () => {
         />
       </Box>
       <Stack direction="column">
+        <SingleContact isGroup name="Group Chats" />
 
-      {contactNames.map(name => (
-        <SingleContact key={name} name={name} />
-      ))}
+        {contactNames.map(
+          (name) =>
+            name !== "Group Chats" && <SingleContact key={name} name={name} />
+        )}
       </Stack>
     </Box>
   );

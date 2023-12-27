@@ -17,8 +17,7 @@ public class MessageController {
     @MessageMapping("/message") // for group messages ------> sent to /app/message
     @SendTo("/chatroom/public")
     public Message receivePublicMessage(@Payload Message message) {
-//        simpMessagingTemplate.
-        System.out.println(message.getContent());
+        // System.out.println(message.getContent());
         return message;
     }
 
@@ -26,7 +25,7 @@ public class MessageController {
     public Message receivePrivateMessage(@Payload Message message) {
         // create a new topic before sending
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private", message); // listens to /user/{username}/private
-        System.out.println(message.getContent());
+        // System.out.println(message.getContent());
         return message;
     }
 

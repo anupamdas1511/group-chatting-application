@@ -7,21 +7,29 @@ import { MessageContext } from "../../context/MessageContext";
 import { useCallback } from "react";
 import { useEffect } from "react";
 
-const SingleContact = ({ icon, name }) => {
+const SingleContact = ({ icon, name, isGroup }) => {
   const { currentReceiver, setCurrentReceiver } = useContext(MessageContext);
   const escFunction = useCallback((event) => {
     if (event.key === "Escape") {
-      setCurrentReceiver(null)
+      setCurrentReceiver(null);
     }
   });
 
   useEffect(() => {
-    document.addEventListener('keydown', escFunction, false)
+    document.addEventListener("keydown", escFunction, false);
 
-    return (() => {
-      document.removeEventListener('keydown', escFunction, false)
-    })
-  }, [escFunction])
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  }, [escFunction]);
+
+  const handleClick = () => {
+    if (isGroup) {
+      setCurrentReceiver("Group Chats");
+    } else {
+      setCurrentReceiver(name);
+    }
+  };
 
   return (
     <Stack
@@ -32,7 +40,7 @@ const SingleContact = ({ icon, name }) => {
       alignItems="center"
       borderBottom={`.5px solid ${blueGrey[700]}`}
       paddingInlineStart={2}
-      onClick={() => setCurrentReceiver(name)}
+      onClick={handleClick}
       sx={{
         cursor: "pointer",
         backgroundColor: blueGrey[900],

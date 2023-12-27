@@ -19,46 +19,74 @@ import SendMessage from "./messages/SendMessage";
 
 const MessageControls = () => {
   const [messageInput, setMessageInput] = React.useState("");
-  const { privateChats, setPrivateChats, currentReceiver } = useContext(MessageContext);
+  const {
+    privateChats,
+    setPrivateChats,
+    publicChats,
+    setPublicChats,
+    currentReceiver,
+  } = useContext(MessageContext);
   const { user } = useContext(UserContext);
   const { stompClient, setStompClient } = useContext(StompContext);
 
   const handleKeyEnter = (e) => {
     if (e.key === "Enter") {
-      handleEnter();
+      if (currentReceiver === "Group Chats") {
+        handleGroupEnter();
+      } else {
+        handleEnter();
+      }
       e.target.value = "";
     }
   };
 
   const handleEnter = () => {
-    console.log('sending message...');
+    console.log("sending message...");
     let newMessage = (
       <SendMessage isGroup name={user.name} content={messageInput} />
     );
     sendMessage();
 
-    setPrivateChats(prevChats => {
+    setPrivateChats((prevChats) => {
       const updatedChats = new Map(prevChats);
       if (!updatedChats.has(currentReceiver)) {
         updatedChats.set(currentReceiver, []);
       }
       updatedChats.get(currentReceiver).push(newMessage);
       return updatedChats;
-    })
-    console.log(messageInput); // shows message
-    console.log(privateChats); // shows private chats
+    });
+    console.log(messageInput); 
+    console.log(privateChats); 
+  };
+
+  const handleGroupEnter = () => {
+    console.log("sending message...");
+    let newMessage = (
+      <SendMessage isGroup name={user.name} content={messageInput} />
+    );
+    sendMessage();
+
+    setPublicChats((prevChats) => {
+      const updatedChats = [...prevChats, newMessage];
+      return updatedChats;
+    });
+    console.log(publicChats);
   };
 
   const sendMessage = () => {
     if (stompClient) {
       let chatMessage = {
         senderName: user.name,
-        receiverName: currentReceiver,
+        receiverName: currentReceiver !== "Group Chats" && currentReceiver,
         content: messageInput,
         status: "MESSAGE",
       };
 
-      stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
+      let sendUrl =
+        currentReceiver !== "Group Chats"
+          ? "/app/private-message"
+          : "/app/message";
+      stompClient.send(sendUrl, {}, JSON.stringify(chatMessage));
     }
   };
 

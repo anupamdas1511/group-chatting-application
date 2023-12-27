@@ -6,6 +6,7 @@ const MessageContext = createContext();
 const MessageContextProvider = ({ children }) => {
   const [currentReceiver, setCurrentReceiver] = useState(null);
   const [privateChats, setPrivateChats] = useState(new Map());
+  const [publicChats, setPublicChats] = useState([]);
 
   return (
     <MessageContext.Provider
@@ -14,6 +15,8 @@ const MessageContextProvider = ({ children }) => {
         setPrivateChats,
         currentReceiver,
         setCurrentReceiver,
+        publicChats,
+        setPublicChats,
       }}
     >
       {children}
